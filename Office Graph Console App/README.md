@@ -1,7 +1,9 @@
 # Konzolová aplikace využívající sjednocené rozhraní Office Graph API
-Office 365 API se v blízké budoucnosti dočkají sjednocení rozhraní do podoby tzv. Office 365 Unified API (alias Graph API).
+Office 365 API se v blízké budoucnosti dočkají sjednocení rozhraní do podoby tzv. Office 365 Unified API (alias Graph API). Jeden koncový bod pak bude obstarávat všechny zdroje, které se pod API skrývají (soubory, e-maily, kalendáře a další uživatelská data).
 
-http://dev.office.com/unifiedAPIs
+Dokumentaci naleznete zde: http://dev.office.com/unifiedAPIs.
+
+My v rámci tohoho návodu vytvoříme jednoduchou konzolovou aplikaci pro Windows, která uživatele přihlásí k jeho tentnatu a poté stáhne přes Graph API jeho jméno.
 
 
 ## Registrace v Azure Active Directory
