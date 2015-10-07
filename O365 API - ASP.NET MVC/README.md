@@ -21,9 +21,10 @@
 1. V Users and Groups už je zaškrnutno **Sign you in and read your profile**
 	![](Images/08-signin-checked.png)
 1. **Finish** - přidají se NuGety a soubory potřebné pro autentizaci k dané organizaci
+	
 	![](Images/09-configuration.png)
-
-![](Images/10-process-done.png)
+	
+	![](Images/10-process-done.png)
 
 ## Co se vytvořilo
 1. Otevřeme **web.config**
