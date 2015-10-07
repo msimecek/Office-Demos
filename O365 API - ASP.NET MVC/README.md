@@ -22,6 +22,7 @@
 ![](Images/08-signin-checked.png)
 1. **Finish** - přidají se NuGety a soubory potřebné pro autentizaci k dané organizaci
 ![](Images/09-configuration.png)
+
 ![](Images/10-process-done.png)
 
 ## Co se vytvořilo
@@ -34,8 +35,8 @@
 	<add key="UnobtrusiveJavaScriptEnabled" value="true" />
 	<add key="ida:ClientId" value="3e4d8ce0-a813-4e7b-a5a7-abfec223290f" />
 	<add key="ida:ClientSecret" value="V1AnIiUJ5Xlf26RBSwYnVkzgbUIrnHq97LaSU7Yf+qU=" />
-	<add key="ida:TenantId" value="f5e69327-6262-4c8e-855e-07142326bb2d" />
-	<add key="ida:Domain" value="msimecek.onmicrosoft.com" />
+	<add key="ida:TenantId" value="XXX" />
+	<add key="ida:Domain" value="XXX.onmicrosoft.com" />
 	<add key="ida:AADInstance" value="https://login.microsoftonline.com/" />
 	<add key="ida:PostLogoutRedirectUri" value="https://localhost:44300/" />
 </appSettings>
@@ -65,6 +66,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 	<add name="DefaultConnection" connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\ADALTokenCacheDb.mdf;Integrated Security=True" providerName="System.Data.SqlClient" />
 </connectionStrings>
 ```
+
 1. Vytvoříme databázový kontext aplikace. Ve složce Models založíme nový soubor **ApplicationDbContext.cs** a naplníme ho tímto kódem:
 ```csharp
 using System;
@@ -90,6 +92,7 @@ namespace VyletDemo.Models
 	}
 }
 ```
+
 1. Ve složce Models vytvoříme i cache na tokeny, coby potomka TokenCache. Vložíme nový soubor s názvem **ADALTokenCache.cs** a naplníme jej takto:
 ```csharp
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -183,6 +186,7 @@ namespace VyletDemo.Models
 	}
 }
 ```
+
 1. Přidáme SettingsHelper s konstantami Office 365 a načítáním nastavení. V projektu vytvoříme složku **Utils** a vložíme do ní nový soubor **SettingsHelper.cs** s tímto obsahem:
 ```csharp
 using System;
@@ -269,6 +273,7 @@ namespace VyletDemo.Utils
 	}
 }
 ```	
+
 1. **App_Start\\Startup.Auth.cs** a úprava autorizace (programujeme si sami pomocí OWIN). Metoda ConfigureAuth:
 ```csharp
 public void ConfigureAuth(IAppBuilder app)
@@ -319,6 +324,7 @@ public void ConfigureAuth(IAppBuilder app)
 		});
 }
 ```
+
 1. Nahoru bude nakonec potřeba doplnit usings:
 ```csharp
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -330,23 +336,24 @@ using System.Threading.Tasks;
 
 ## Volání Office 365 API
 Budeme načítat události kalendáře, takže si připravíme třídu, která bude událost reprezentovat.
-1. Ve složce **Models** vytvoříme nový soubor **MyCalendarEvent.cs** a vložíme do něj:
-```csharp
-using System;
 
-namespace VyletDemo.Models
-{
-    public class MyCalendarEvent
-    {
-        public string Id { get; set; }
-        public string Subject { get; set; }
-        public string Location { get; set; }
-        public DateTimeOffset? Start { get; set; }
-        public DateTimeOffset? End { get; set; }
-        public string Body { get; set; }
-    }
-}
-```
+1. Ve složce **Models** vytvoříme nový soubor **MyCalendarEvent.cs** a vložíme do něj:
+	```csharp
+	using System;
+	
+	namespace VyletDemo.Models
+	{
+		public class MyCalendarEvent
+		{
+			public string Id { get; set; }
+			public string Subject { get; set; }
+			public string Location { get; set; }
+			public DateTimeOffset? Start { get; set; }
+			public DateTimeOffset? End { get; set; }
+			public string Body { get; set; }
+		}
+	}
+	```
 
 1. Ve složce **Utils** vytvoříme soubor **AuthHelper.cs** a vložíme do něj:
 ```csharp
@@ -456,10 +463,10 @@ async public Task<ActionResult> Index()
 
 
 1. Přidáme View -> Index -> List
-![](Images/17-add-view.png)
+	![](Images/17-add-view.png)
 1. Odebereme odkaz pro vytváření a odkazy pro správu.
 1. Spustíme.
-![](Images/19-consent.png)
+	![](Images/19-consent.png)
 
 1. Do posledního <td> přidáme registrační tlačítko.
 
@@ -496,12 +503,11 @@ async public Task<ActionResult> Register(FormCollection collection)
 ```
 
 1. Nakonec ještě přidáme odkaz na výlety do souboru **_Layout.cshtml** ve složce **Views\\Shared**.
-
-```html
-<ul class="nav navbar-nav">
-	<li>@Html.ActionLink("Home", "Index", "Home")</li>
-	<li>@Html.ActionLink("About", "About", "Home")</li>
-	<li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-	<li>@Html.ActionLink("Výlety", "Index", "Vylety")</li>
-</ul>
-```
+	```html
+	<ul class="nav navbar-nav">
+		<li>@Html.ActionLink("Home", "Index", "Home")</li>
+		<li>@Html.ActionLink("About", "About", "Home")</li>
+		<li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+		<li>@Html.ActionLink("Výlety", "Index", "Vylety")</li>
+	</ul>
+	```
