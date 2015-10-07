@@ -27,20 +27,21 @@
 
 ## Co se vytvořilo
 1. Otevřeme **web.config**
-```xml
-<appSettings>
-	<add key="webpages:Version" value="3.0.0.0" />
-	<add key="webpages:Enabled" value="false" />
-	<add key="ClientValidationEnabled" value="true" />
-	<add key="UnobtrusiveJavaScriptEnabled" value="true" />
-	<add key="ida:ClientId" value="3e4d8ce0-a813-4e7b-a5a7-abfec223290f" />
-	<add key="ida:ClientSecret" value="V1AnIiUJ5Xlf26RBSwYnVkzgbUIrnHq97LaSU7Yf+qU=" />
-	<add key="ida:TenantId" value="XXX" />
-	<add key="ida:Domain" value="XXX.onmicrosoft.com" />
-	<add key="ida:AADInstance" value="https://login.microsoftonline.com/" />
-	<add key="ida:PostLogoutRedirectUri" value="https://localhost:44300/" />
-</appSettings>
-```
+
+	```xml
+	<appSettings>
+		<add key="webpages:Version" value="3.0.0.0" />
+		<add key="webpages:Enabled" value="false" />
+		<add key="ClientValidationEnabled" value="true" />
+		<add key="UnobtrusiveJavaScriptEnabled" value="true" />
+		<add key="ida:ClientId" value="3e4d8ce0-a813-4e7b-a5a7-abfec223290f" />
+		<add key="ida:ClientSecret" value="V1AnIiUJ5Xlf26RBSwYnVkzgbUIrnHq97LaSU7Yf+qU=" />
+		<add key="ida:TenantId" value="XXX" />
+		<add key="ida:Domain" value="XXX.onmicrosoft.com" />
+		<add key="ida:AADInstance" value="https://login.microsoftonline.com/" />
+		<add key="ida:PostLogoutRedirectUri" value="https://localhost:44300/" />
+	</appSettings>
+	```
 1. Nové jsou ClientId, ClientSecret, TenantId, Domain, AADInstance a PostLogoutRedirectUri.
 
 1. Podíváme se, odkud se hodnoty berou.
