@@ -460,10 +460,9 @@ async public Task<ActionResult> Index()
 1. Má atribut `[Authorize]`, protože budeme vyžadovat přihlášení.
 1. Nejprve připravíme základní kostru - seznam eventů `List<MyCalendarEvent>` a zobrazení view `View(myEvents)`.
 1. Potom necháme pomocnou metodu, ať provede nezbytné autentizační kolečko a vrátí nám OutlookClient, který budeme používat k volání API.
-1. ABCD
-1. DEFG
-
-
+1. Následně použijeme OutlookClient k získání ID konkrétního kalendáře (v tomto případě se jmenuje Vylety). Všimněte si, že příkaz je zakončen `ExecuteSingleAsync();`
+1. Jakmile máme ID kalendáře, můžeme si sáhnout na události v něm uložené - `GetById(vyletyId).Events`.
+1. Nakonec projdeme vrácené události, překlopíme je do vlastního objektu `MyCalendarEvent` a vrátíme v podobě seznamu. Výsledky jsou automaticky stránkované, proto čteme vždy `CurrentPage` a nakonec v cyklu voláme `GetNextPageAsync()`.
 1. Přidáme View -> Index -> List
 
 	![](Images/17-add-view.png)
