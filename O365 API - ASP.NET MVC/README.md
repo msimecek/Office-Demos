@@ -1,33 +1,67 @@
-# Office 365 API a ASP.NET MVC
+Office 365 API a ASP.NET MVC
+===
+
+Tento postup vás provede tvorbou aplikace ASP.NET MVC, která přečte konkrétní kalendář Office 365 a umožní zkopírovat vybranou událost do kalendáře uživatele.
+
+## Příprava
+Aby příklad fungoval, musí v Office 365 existovat kalendář, který se jmenuje `Vylety` a je přístupný přihlášenému uživateli. Pro potřeby této ukázky ho vytvoříme jednoduše jako Other calendar.
+
+1. Přihlašte se na https://outlook.office365.com.
+1. Klikněte na nabídku vlevo nahoře a zvolte kalendář.
+
+	![](Images/00-calendar.png)
+	
+1. Najeďte myší nad **Other calendars** a klikněte na tlačítko **+**, které se objeví.
+
+	![](Images/00-other-calendars.png)
+
+1. Pojmenujte kalendář **Vylety** (přesně, název se pak používá v kódu).
+
+	![](Images/00-vylety.png)
 
 ## Nový projekt ASP.NET MVC
-1. Nový projekt -> Web -> MVC
+1. Spusťte Visual Studio a vyberte **Nový projekt -> Web -> MVC**.
+	
 	![](Images/01-new-web.png)
-1. Authentication -> No authentication -> OK
+	
+1. Klikněte na **Authentication**, přepněte na **No authentication** a potvrďte **OK**. Autentizaci budeme implementovat vlastními silami.
+	
 	![](Images/02-no-auth.png)
 
 ## Přidání Office 365 API
-1. Right-click -> Add -> Connected Service
+1. Klikněte pravým tlačítkem na projekt a vyberte **Add -> Connected Service**.
+
 	![](Images/03-add-connected-service.png)
-1. Office 365
+	
+1. Zvolte **Office 365 APIs**.
+
 	![](Images/04-office-apis.png)
-1. Vyplnit doménu (*.onmicrosoft.com)
+	
+1. Vyplňte doménu svého tenantu (*.onmicrosoft.com).
+
 	![](Images/05-domain.png)
-1. Přihlášení
-1. Vytvořit novou aplikaci v AD, zaškrtnout SSO
+	
+1. Přihlašte se účtem administrátora Office 365 (`[jmeno]@[tenant].onmicrosoft.com`).
+1. Ponechte nastavení na **vytvoření nové aplikace v AD** a zaškrtněte **Single Sign-On**.
+
 	![](Images/06-new-ad-app.png)
-1. V Calendar zaškrnout **Read and write to your calendars**
+	
+1. V Calendar zaškrtněte **Read and write to your calendars**.
+
 	![](Images/07-readwrite-calendars.png)
-1. V Users and Groups už je zaškrnutno **Sign you in and read your profile**
+	
+1. V Users and Groups už je zaškrnutno **Sign you in and read your profile**. Další nastavení opránění nebudeme potřebovat.
+
 	![](Images/08-signin-checked.png)
-1. **Finish** - přidají se NuGety a soubory potřebné pro autentizaci k dané organizaci
+	
+1. Klikněte na **Finish** - přidají se NuGety a soubory potřebné pro autentizaci k dané organizaci.
 	
 	![](Images/09-configuration.png)
 	
 	![](Images/10-process-done.png)
 
 ## Co se vytvořilo
-1. Otevřeme **web.config**
+1. Otevřeme **web.config**.
 
 	```xml
 	<appSettings>
@@ -35,34 +69,42 @@
 		<add key="webpages:Enabled" value="false" />
 		<add key="ClientValidationEnabled" value="true" />
 		<add key="UnobtrusiveJavaScriptEnabled" value="true" />
-		<add key="ida:ClientId" value="3e4d8ce0-a813-4e7b-a5a7-abfec223290f" />
-		<add key="ida:ClientSecret" value="V1AnIiUJ5Xlf26RBSwYnVkzgbUIrnHq97LaSU7Yf+qU=" />
+		<add key="ida:ClientId" value="XXX" />
+		<add key="ida:ClientSecret" value="XXX" />
 		<add key="ida:TenantId" value="XXX" />
 		<add key="ida:Domain" value="XXX.onmicrosoft.com" />
 		<add key="ida:AADInstance" value="https://login.microsoftonline.com/" />
 		<add key="ida:PostLogoutRedirectUri" value="https://localhost:44300/" />
 	</appSettings>
 	```
-1. Nové jsou ClientId, ClientSecret, TenantId, Domain, AADInstance a PostLogoutRedirectUri.
+1. Nové jsou hodnoty `ClientId`, `ClientSecret`, `TenantId`, `Domain`, `AADInstance` a `PostLogoutRedirectUri`, které pocházejí z Azure Active Directory.
 
 1. Podíváme se, odkud se hodnoty berou.
 	1. Otevřeme https://manage.windowsazure.com a přihlásíme se účtem Office 365.
-	1. Přejdeme na Active Directory a zvolíme directory Office 365.
-	1. V seznamu najdeme svou aplikaci (**VyletDemo**). Pokud tam není, je potřeba přepnout nahoře na *Application my company owns*.
+	1. Přejdeme na **Active Directory** a zvolíme directory Office 365.
+	1. V seznamu najdeme svou aplikaci (v tomto případě **VyletDemo**, ale u vás se může jmenovat jinak - záleží na tom, jak jste pojmenovali projekt). Pokud tam není, je potřeba přepnout nahoře na *Application my company owns*.
+	
 		![](Images/11-azure-ad.png)	
+		
 	1. Otevřeme ji a přejdeme na **CONFIGURE**.
 	1. Jsou tam všechny informace, které pro nás vytvořilo Visual Studio a přidalo je do web.config.
+	
 		![](Images/12-app-info-ad.png)
 	
 ## Přihlašování
-Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. Při přechodu na Azure je potřeba ji přesměrovat na SQL Azure.
+Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. Při přechodu na Azure by bylo potřeba ji přesměrovat na SQL Azure.
 
-1. V Solution Exploreru klikneme pravým tlačítkem na složku **App_Data** a zvolíme Add -> New item...
-1. Vybereme **Data** -> **SQL Server Database** a pojmenujeme ji **ADALTokenCacheDb.mdf**.
+1. V Solution Exploreru klikneme pravým tlačítkem na složku **App_Data** a zvolíme **Add &rarr; New item**.
+1. Vybereme **Data** &rarr; **SQL Server Database** a pojmenujeme ji **ADALTokenCacheDb.mdf**.
+
 	![](Images/13-new-database.png)
+	
 1. Klikneme na projekt pravým tlačítkem, zvolíme Manage NuGet Packages a nainstalujeme **EntityFramework**.
+
 	![](Images/15-install-entityframework.png)
+	
 1. Do web.config, sekce `configuration`, přidáme následující sekci (pokud tam automaticky nevznikla):
+
 	```xml
 	<connectionStrings>
 		<add name="DefaultConnection" connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\ADALTokenCacheDb.mdf;Integrated Security=True" providerName="System.Data.SqlClient" />
@@ -70,6 +112,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 	```
 
 1. Vytvoříme databázový kontext aplikace. Ve složce Models založíme nový soubor **ApplicationDbContext.cs** a naplníme ho tímto kódem:
+
 	```csharp
 	using System;
 	using System.ComponentModel.DataAnnotations;
@@ -96,6 +139,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 	```
 
 1. Ve složce Models vytvoříme i cache na tokeny, coby potomka TokenCache. Vložíme nový soubor s názvem **ADALTokenCache.cs** a naplníme jej takto:
+
 	```csharp
 	using Microsoft.IdentityModel.Clients.ActiveDirectory;
 	using System;
@@ -190,6 +234,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 	```
 
 1. Přidáme SettingsHelper s konstantami Office 365 a načítáním nastavení. V projektu vytvoříme složku **Utils** a vložíme do ní nový soubor **SettingsHelper.cs** s tímto obsahem:
+
 	```csharp
 	using System;
 	using System.Configuration;
@@ -277,6 +322,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 	```	
 
 1. **App_Start\\Startup.Auth.cs** a úprava autorizace (programujeme si sami pomocí OWIN). Metoda ConfigureAuth:
+
 	```csharp
 	public void ConfigureAuth(IAppBuilder app)
 	{
@@ -328,6 +374,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 	```
 
 1. Nahoru bude nakonec potřeba doplnit usings:
+
 	```csharp
 	using Microsoft.IdentityModel.Clients.ActiveDirectory;
 	using System.IdentityModel.Claims;
@@ -340,6 +387,7 @@ Pro ukládání přihlašovacích tokenů se použije lokální SQL databáze. P
 Budeme načítat události kalendáře, takže si připravíme třídu, která bude událost reprezentovat.
 
 1. Ve složce **Models** vytvoříme nový soubor **MyCalendarEvent.cs** a vložíme do něj:
+
 	```csharp
 	using System;
 	
@@ -358,6 +406,7 @@ Budeme načítat události kalendáře, takže si připravíme třídu, která b
 	```
 
 1. Ve složce **Utils** vytvoříme soubor **AuthHelper.cs** a vložíme do něj:
+
 	```csharp
 	using Microsoft.IdentityModel.Clients.ActiveDirectory;
 	using Microsoft.Office365.Discovery;
@@ -417,7 +466,9 @@ Budeme načítat události kalendáře, takže si připravíme třídu, která b
 
 1. Začneme vytvářet controller, který to všechno rozhýbe.
 1. Ve složce **Controllers** zvolíme Add -> Controller a zvolíme **MVC 5 Controller - Empty**.
-![](Images/16-mvc-controller-empty.png)
+
+	![](Images/16-mvc-controller-empty.png)
+	
 1. Pojmenujeme ho **VyletyController** a začneme plnit.
 
 ### Index - seznam událostí
@@ -457,6 +508,7 @@ async public Task<ActionResult> Index()
 	return View(myEvents);
 }
 ```
+
 1. Má atribut `[Authorize]`, protože budeme vyžadovat přihlášení.
 1. Nejprve připravíme základní kostru - seznam eventů `List<MyCalendarEvent>` a zobrazení view `View(myEvents)`.
 1. Potom necháme pomocnou metodu, ať provede nezbytné autentizační kolečko a vrátí nám OutlookClient, který budeme používat k volání API.
@@ -483,6 +535,7 @@ async public Task<ActionResult> Index()
 	```
 
 1. A do controlleru obsluhu akce:
+
 	```csharp
 	[HttpPost]
 	async public Task<ActionResult> Register(FormCollection collection)
@@ -507,6 +560,7 @@ async public Task<ActionResult> Index()
 	```
 
 1. Nakonec ještě přidáme odkaz na výlety do souboru **_Layout.cshtml** ve složce **Views\\Shared**.
+
 	```xml
 	<ul class="nav navbar-nav">
 		<li>@Html.ActionLink("Home", "Index", "Home")</li>
@@ -515,3 +569,7 @@ async public Task<ActionResult> Index()
 		<li>@Html.ActionLink("Výlety", "Index", "Vylety")</li>
 	</ul>
 	```
+	
+Hotovo. Aplikace by měla vypadat nějak takhle:
+
+![](Images/21-done.png)
